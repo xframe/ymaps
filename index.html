@@ -43,10 +43,25 @@
         sendCoords(placemark.geometry.getCoordinates());
       });
 
-      map.events.add('click', function (e) {
-        var coords = e.get('coords');
-        placemark.geometry.setCoordinates(coords);
-        sendCoords(coords);
+      // Long press (500ms) to move pin — avoids accidental clicks
+      var pressTimer = null;
+      var pressCoords = null;
+
+      map.events.add('mousedown', function (e) {
+        pressCoords = e.get('coords');
+        pressTimer = setTimeout(function () {
+          placemark.geometry.setCoordinates(pressCoords);
+          sendCoords(pressCoords);
+          pressTimer = null;
+        }, 500);
+      });
+
+      map.events.add('mouseup', function () {
+        if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+      });
+
+      map.events.add('mousemove', function () {
+        if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
       });
     });
   </script>
