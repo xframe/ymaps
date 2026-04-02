@@ -77,6 +77,15 @@
       map.events.add('mousemove', function () {
         if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
       });
+
+      // Listen for center-on-pin message from parent
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'center-on-pin') {
+          map.setCenter(placemark.geometry.getCoordinates(), 16, {
+            duration: 300,
+          });
+        }
+      });
     });
   </script>
 </body>
