@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    #map { width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"></script>
+  <script>
+    var params = new URLSearchParams(location.search);
+    var lat = parseFloat(params.get('lat')) || 41.311;
+    var lon = parseFloat(params.get('lon')) || 69.279;
+
+    ymaps.ready(function () {
+      var map = new ymaps.Map('map', {
+        center: [lat, lon],
+        zoom: 16,
+        controls: ['zoomControl'],
+      });
+
+      var placemark = new ymaps.Placemark([lat, lon], {}, {
+        draggable: true,
+        preset: 'islands#redDotIcon',
+      });
+
+      map.geoObjects.add(placemark);
+
+      function sendCoords(coords) {
+        window.parent.postMessage({
+          type: 'map-pin-moved',
+          lat: coords[0],
+          lon: coords[1],
+        }, '*');
+      }
+
+      placemark.events.add('dragend', function () {
+        sendCoords(placemark.geometry.getCoordinates());
+      });
+
+      map.events.add('click', function (e) {
+        var coords = e.get('coords');
+        placemark.geometry.setCoordinates(coords);
+        sendCoords(coords);
+      });
+    });
+  </script>
+</body>
+</html>
