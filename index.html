@@ -57,27 +57,6 @@
         sendCoords(placemark.geometry.getCoordinates());
       });
 
-      // Search — type address to move pin
-      var search = new ymaps.control.SearchControl({
-        options: {
-          size: 'large',
-          float: 'left',
-          noPlacemark: true,
-          placeholderContent: 'Поиск адреса...',
-        }
-      });
-      map.controls.add(search);
-
-      search.events.add('resultselect', function () {
-        var result = search.getResultsArray()[search.getSelectedIndex()];
-        if (result) {
-          var coords = result.geometry.getCoordinates();
-          placemark.geometry.setCoordinates(coords);
-          map.setCenter(coords, 16);
-          sendCoords(coords);
-        }
-      });
-
       // Long press (350ms) to move pin — avoids accidental clicks
       var pressTimer = null;
       var pressCoords = null;
