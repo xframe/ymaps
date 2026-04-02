@@ -24,7 +24,14 @@
         controls: [],
       }, {
         suppressMapOpenBlock: true,
+        suppressObsoleteBrowserNotifier: true,
+        yandexMapDisablePoiInteractivity: true,
       });
+
+      // Hide all Yandex UI overlays
+      var css = document.createElement('style');
+      css.textContent = '.ymaps-2-1-79-gotoymaps, .ymaps-2-1-79-gototech, .ymaps-2-1-79-copyright, .ymaps-2-1-79-map-copyrights-promo, .ymaps-2-1-79-searchbox, [class*="gotoymaps"], [class*="gototech"], [class*="copyrights-promo"], [class*="route-button"] { display: none !important; }';
+      document.head.appendChild(css);
 
       var placemark = new ymaps.Placemark([lat, lon], {}, {
         draggable: true,
