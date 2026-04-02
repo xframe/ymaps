@@ -78,12 +78,16 @@
         if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
       });
 
-      // Listen for center-on-pin message from parent
+      // Listen for messages from parent
       window.addEventListener('message', function (e) {
-        if (e.data && e.data.type === 'center-on-pin') {
-          map.setCenter(placemark.geometry.getCoordinates(), 16, {
-            duration: 300,
-          });
+        if (!e.data) return;
+        if (e.data.type === 'center-on-pin') {
+          map.setCenter(placemark.geometry.getCoordinates(), 16, { duration: 300 });
+        }
+        if (e.data.type === 'move-pin' && e.data.lat && e.data.lon) {
+          var coords = [e.data.lat, e.data.lon];
+          placemark.geometry.setCoordinates(coords);
+          map.setCenter(coords, 16, { duration: 300 });
         }
       });
     });
